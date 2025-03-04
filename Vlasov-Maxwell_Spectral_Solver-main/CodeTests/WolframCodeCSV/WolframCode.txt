@@ -1,0 +1,64 @@
+(*Mathematica Script to Compute and Plot Landau Damping Rate.*)
+
+(* Define the Plasma Dispersion Function Z(\[Xi]).*)
+Z[\[Xi]_] := I Sqrt[\[Pi]] Exp[-\[Xi]^2] (1 + I Erfi[\[Xi]])
+
+(* Define the ion to electron mass ratio.*)
+MassRatio = 1000000;
+
+(* Define the Dispersion Relation.*)
+DispersionRelation[\[Omega]_, k_] := 
+ 1 + (1/(k^2 )) (2 + ( I \[Omega]/(Sqrt[2] k)) ( 
+       Z[I  \[Omega]/(Sqrt[2] k)] + 
+        Sqrt[MassRatio] Z[I Sqrt[MassRatio] \[Omega]/(Sqrt[2] k)]))
+
+(*ReDispRel[\[Omega]_,k_]:=Re[dispersionRelation[\[Omega],k]]
+ImDispRel[\[Omega]_,k_]:=Im[dispersionRelation[\[Omega],k]].*)
+
+(* Set Up the Range of Wave Numbers k.*)
+kMin = 0.01;
+kMax = 2.0;
+kStep = 0.01;
+kValues = Table[k, {k, kMin, kMax, kStep}];
+
+(* Initialize an Empty List to Store {k,Im[\[Omega]]} Pairs.*)
+data1 = {};
+dataomega = {};
+
+(*Initial Guess for \[Omega] Based on Approximate Real Part.*)
+(*You can adjust this initial guess if needed.*)
+\[Omega]ImagInit = -0.01;
+\[Omega]RealInit = 0.01;
+
+(* Loop Over k Values to Solve for \[Omega] and Compute Im[\[Omega]].*)
+For[k = kMin, k <= kMax, 
+ k += kStep,(*Initial guess for damping rate.*)(*Use FindRoot to \
+Solve the Dispersion Relation for \[Omega].*)
+ sol = Quiet@
+   FindRoot[
+    DispersionRelation[\[Omega], k] == 
+     0, {\[Omega], \[Omega]RealInit + I \[Omega]ImagInit}, 
+    MaxIterations -> 100000, WorkingPrecision -> 24, 
+    AccuracyGoal -> 20, PrecisionGoal -> 20];
+ (*Extract the Solution \[Omega].*)
+ \[Omega]Solution = \[Omega] /. sol;
+ \[Omega]RealInit = Re[\[Omega]Solution];
+ \[Omega]ImagInit = Im[\[Omega]Solution];
+ (*Store the k and Im[\[Omega]] Values.*)
+ AppendTo[data1, {k, \[Omega]RealInit}];
+ AppendTo[dataomega , {k, -\[Omega]ImagInit}];
+ ]
+
+
+(*Plot the Damping Rate Im[\[Omega]] as a Function of k.*)
+ListPlot[{data1}, Joined -> True, PlotRange -> All, 
+ PlotStyle -> Thick, AxesLabel -> {"k", "Im[\[Omega]]"}, 
+ PlotLabel -> "Landau Damping Rate vs. Wave Number k", 
+ LabelStyle -> {FontSize -> 14}, ImageSize -> Large]
+ListPlot[{dataomega }, Joined -> True, PlotRange -> All, 
+ PlotStyle -> Thick, AxesLabel -> {"k", "Re[\[Omega]]"}, 
+ PlotLabel -> "Landau Damping Rate vs. Wave Number k", 
+ LabelStyle -> {FontSize -> 14}, ImageSize -> Large]
+(*Save damping rate vs k in csv file.*)
+Export["filepath", data1]
+Export["filepath", data1]
