@@ -84,8 +84,9 @@ Once you have your prerequisites installed, navigate to the `Run_JAX_VM_solver.p
 ### Testing
 
 Current tests include:
-- A comparison of previous Hermite code to the existing implementation.
+- A comparison of Existing hermite code and a possible replacement using orthax
 - A 1D Landau Damping rate test, which can be compared to results obtained using Mathematica. The results are stored in `WolframCodeCSV`, and the computations are performed by the code in `WolframCode.txt` (remember to update the file path to match your local setup).
+- A comparison of existing trap integration method with possible quadax integration functions
 
 ---
 
