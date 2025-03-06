@@ -6,6 +6,11 @@ from orthax import hermite
 
 jax.config.update("jax_enable_x64", True)
 
+"""
+To use this file, install orthax, as we are using the hermite functions, 
+and comparing it to the recurrence method used in our code
+"""
+
 
 @jax.jit
 def hermite_recurrence(n, x):

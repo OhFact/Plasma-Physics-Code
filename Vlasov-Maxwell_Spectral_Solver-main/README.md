@@ -62,9 +62,11 @@ The `JAX_VM_solver.py` file defines the necessary functions for modeling, while 
     ├── requirements.txt
     └── CodeTests
         ├── LandauDampingRate.py
+        ├── WolframCodeCSV
         │   ├── damping_rate_1000000.py
         │   └── omega.py
-        └── TestingHermite.py
+        ├── TestingHermite.py
+        └── Compute_C_nmp_test.py
 ```
 
 ---
